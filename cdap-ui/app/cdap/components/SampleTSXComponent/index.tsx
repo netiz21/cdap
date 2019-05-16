@@ -17,12 +17,12 @@
 import * as React from 'react';
 import * as Loadable from 'react-loadable';
 import LoadingSVGCentered from 'components/LoadingSVGCentered';
+import InformationIcon from 'components/InformationIcon';
 const SubTSXComponent = Loadable({
   loader: () =>
     import(/* webpackChunkName: "ChildTSXComponent" */ 'components/SampleTSXComponent/ChildTSXComponent'),
   loading: LoadingSVGCentered,
 });
-
 interface IFCProps {
   prop1: boolean;
   prop2: string;
@@ -62,5 +62,6 @@ export default function SampleTSXComponent() {
     <h1 key="super-title"> Hello from TSX! </h1>,
     <FunctionalComponent prop1={true} prop2="Nice!" />,
     <StatefullComponent prop3="hurray!! stateful prop" />,
+    <InformationIcon description="Some meaningful description" />,
   ];
 }

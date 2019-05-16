@@ -70,6 +70,7 @@ var ToggleSwitch = require('../cdap/components/ToggleSwitch').default;
 var PipelineList = require('../cdap/components/PipelineList').default;
 var AppHeader = require('../cdap/components/AppHeader').default;
 var Markdown = require('../cdap/components/Markdown').MarkdownWithStyles;
+var InformationIcon = require('../cdap/components/InformationIcon').default;
 
 export {
   Store,
@@ -121,4 +122,5 @@ export {
   PipelineList,
   AppHeader,
   Markdown,
+  InformationIcon,
 };
