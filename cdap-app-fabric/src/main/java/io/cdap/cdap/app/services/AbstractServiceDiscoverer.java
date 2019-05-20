@@ -72,7 +72,8 @@ public abstract class AbstractServiceDiscoverer implements ServiceDiscoverer {
   protected abstract DiscoveryServiceClient getDiscoveryServiceClient();
 
   @Nullable
-  private URL createURL(@Nullable Discoverable discoverable, String namespaceId, String applicationId, String serviceId) {
+  private URL createURL(@Nullable Discoverable discoverable, String namespaceId, String applicationId,
+                        String serviceId) {
     if (discoverable == null) {
       return null;
     }
