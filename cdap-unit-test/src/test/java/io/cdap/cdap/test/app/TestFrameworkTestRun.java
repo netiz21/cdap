@@ -1036,6 +1036,24 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
     centralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
   }
 
+  @Category(SlowTests.class)
+  @Test
+  public void testGetServiceURLDiffNamespace() throws Exception {
+    ApplicationManager discoveringApplicationManager = deployApplication(AppUsingGetServiceURL.class);
+
+    NamespaceId systemSpace = new NamespaceId("system");
+    ApplicationManager systemApplicationManager = deployApplication(systemSpace, AppWithServices.class);
+    ServiceManager systemCentralServiceManager =
+      systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
+    systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
+
+    // serviceManager.stop();
+    systemCentralServiceManager.stop();
+
+    // serviceManager.waitForStopped(10, TimeUnit.SECONDS);
+    systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+  }
+
   /**
    * Checks to ensure that a particular  {@param workerManager} has {@param expected} number of
    * instances while retrying every 50 ms for 15 seconds.
