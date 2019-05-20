@@ -16,6 +16,7 @@
 
 package io.cdap.cdap.test.app;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -69,6 +70,8 @@ public class AppWithServices extends AbstractApplication {
 
   public static final String WRITE_VALUE_RUN_KEY = "write.value.run";
   public static final String WRITE_VALUE_STOP_KEY = "write.value.stop";
+
+  public static final String ANSWER = "MagicalString";
 
     @Override
     public void configure() {
@@ -157,6 +160,12 @@ public class AppWithServices extends AbstractApplication {
     @GET
     public void handler(HttpServiceRequest request, HttpServiceResponder responder) {
       responder.sendStatus(200);
+    }
+
+    @Path("/response")
+    @GET
+    public void response(HttpServiceRequest request, HttpServiceResponder responder) {
+      responder.sendString(200, ANSWER, Charsets.UTF_8);
     }
 
     @Path("/failure")
