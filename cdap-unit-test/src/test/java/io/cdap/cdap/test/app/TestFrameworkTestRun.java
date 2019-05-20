@@ -134,8 +134,7 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
   private static final Logger LOG = LoggerFactory.getLogger(TestFrameworkTestRun.class);
   private static final Gson GSON = new Gson();
   private static final Type MAP_METADATASCOPE_METADATA_TYPE =
-    new TypeToken<Map<MetadataScope, Metadata>>() {
-    }.getType();
+    new TypeToken<Map<MetadataScope, Metadata>>() { }.getType();
 
   @ClassRule
   public static final TestConfiguration CONFIG = new TestConfiguration(Constants.Explore.EXPLORE_ENABLED, false,
@@ -341,7 +340,7 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
                                                        AppWithPlugin.WORKFLOW,
                                                        Constants.Metrics.Tag.RUN_ID,
                                                        runRecords.get(0).getPid()
-    );
+                                                       );
 
     getMetricsManager().waitForTotalMetricCount(workflowTags,
                                                 String.format("user.destroy.%s", AppWithPlugin.WORKFLOW),
@@ -841,7 +840,7 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
     mrMetricsContext.put(Constants.Metrics.Tag.APP, applicationManager.getInfo().getName());
     mrMetricsContext.put(Constants.Metrics.Tag.MAPREDUCE, "WordCount");
     mrMetricsContext.put(Constants.Metrics.Tag.RUN_ID,
-                         nodeStateDetailMap.get("WordCount").getRunId());
+                            nodeStateDetailMap.get("WordCount").getRunId());
     Assert.assertEquals(7, getMetricsManager().getTotalMetric(mrMetricsContext, "user.num.words"));
 
     final Map<String, String> readerContext = new HashMap<>(workflowMetricsContext);
@@ -1045,13 +1044,12 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       .getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
     discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    NamespaceId systemSpace = new NamespaceId("system");
-    ApplicationManager systemApplicationManager = deployApplication(systemSpace, AppWithServices.class);
+    ApplicationManager systemApplicationManager = deployApplication(NamespaceId.SYSTEM, AppWithServices.class);
     ServiceManager systemCentralServiceManager =
       systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "appWithServices");
+    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "forward");
     String decodedResult = new Gson().fromJson(result, String.class);
     Assert.assertEquals(AppWithServices.ANSWER, decodedResult);
 
@@ -1074,7 +1072,7 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "appWithServices");
+    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "forward");
     String decodedResult = new Gson().fromJson(result, String.class);
     Assert.assertEquals(AppWithServices.ANSWER, decodedResult);
 
@@ -1102,10 +1100,10 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
 
   /**
    * Checks to ensure that a particular key is present in a {@link KeyValueTable}
-   *
-   * @param namespace   {@link NamespaceId}
+   * @param namespace {@link NamespaceId}
    * @param datasetName name of the dataset
    * @param expectedKey expected key byte array
+   *
    * @throws Exception if the key is not found even after 15 seconds of timeout
    */
   private void kvTableKeyCheck(final NamespaceId namespace, final String datasetName, final byte[] expectedKey)
@@ -1314,169 +1312,169 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       // - if it is in an attempt of a nested transaction, then the expected value is null
       // - if it is in an implicit transaction, then the expected value is "default"
       // - if it is in an explicit transaction, then the expected value is the transaction timeout
-      Object[][] writesToValidate = new Object[][]{
+      Object[][] writesToValidate = new Object[][] {
 
         // transactions attempted by the workers
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_WORKER_RUNTIME},
-        {AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_WORKER_INITIALIZE},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_WORKER_DESTROY},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_WORKER_RUNTIME},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorker},
-        {AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorker },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorker },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorker},
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_WORKER_RUNTIME },
+        { AppWithCustomTx.WORKER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_WORKER_INITIALIZE },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutWorker },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_WORKER_DESTROY },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutWorker },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_WORKER_RUNTIME },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorker },
+        { AppWithCustomTx.WORKER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
 
         // transactions attempted by the service
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.RUNTIME, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.ONERROR, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.ONERROR, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.RUNTIME, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.ONERROR, txDefaulTimeoutService },
+        { AppWithCustomTx.CONSUMER_TX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.ONERROR, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_TX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED },
 
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_HANDLER_INITIALIZE},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_HANDLER_DESTROY},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_HANDLER_RUNTIME},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_CONSUMER_DESTROY},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR, null},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_TX, AppWithCustomTx.TIMEOUT_CONSUMER_ERROR},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_PRODUCER_DESTROY},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR, null},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_TX, AppWithCustomTx.TIMEOUT_PRODUCER_ERROR},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_TX_D, txDefaulTimeoutService},
-        {AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_HANDLER_INITIALIZE },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_HANDLER_DESTROY },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_HANDLER_RUNTIME },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.HANDLER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_CONSUMER_RUNTIME },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_CONSUMER_DESTROY },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService},
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR, null },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_TX, AppWithCustomTx.TIMEOUT_CONSUMER_ERROR },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.CONSUMER_NOTX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_TX_T, AppWithCustomTx.TIMEOUT_PRODUCER_RUNTIME },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_T, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_CT, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.RUNTIME_NEST_TC, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_PRODUCER_DESTROY },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR, null },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_TX, AppWithCustomTx.TIMEOUT_PRODUCER_ERROR },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_TX_D, txDefaulTimeoutService },
+        { AppWithCustomTx.PRODUCER_NOTX, AppWithCustomTx.ONERROR_NEST, AppWithCustomTx.FAILED },
 
         // transactions attempted by the workflows
-        {AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_ACTION_RUNTIME},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.ACTION_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.WORKFLOW_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_ACTION_RUNTIME },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.ACTION_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
 
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_WORKFLOW_INITIALIZE},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_WORKFLOW_DESTROY},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutWorkflow},
-        {AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_ACTION_INITIALIZE},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutAction},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME, null},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_ACTION_RUNTIME},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutAction},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_ACTION_DESTROY},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutAction},
-        {AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_WORKFLOW_INITIALIZE },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_WORKFLOW_DESTROY },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutWorkflow },
+        { AppWithCustomTx.WORKFLOW_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_ACTION_INITIALIZE },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutAction },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME, null },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_TX, AppWithCustomTx.TIMEOUT_ACTION_RUNTIME },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_TX_D, txDefaulTimeoutAction },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.RUNTIME_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_ACTION_DESTROY },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutAction },
+        { AppWithCustomTx.ACTION_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
 
         // transactions attempted by the mapreduce's
-        {AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutMapReduce},
-        {AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutMapReduce},
-        {AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_MAPREDUCE_INITIALIZE},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutMapReduce},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_MAPREDUCE_DESTROY},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutMapReduce},
-        {AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutMapReduce },
+        { AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutMapReduce },
+        { AppWithCustomTx.MAPREDUCE_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_MAPREDUCE_INITIALIZE },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutMapReduce },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_MAPREDUCE_DESTROY },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutMapReduce },
+        { AppWithCustomTx.MAPREDUCE_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
 
         // transactions attempted by the spark's
-        {AppWithCustomTx.SPARK_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutSpark},
-        {AppWithCustomTx.SPARK_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.SPARK_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutSpark},
-        {AppWithCustomTx.SPARK_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE, null},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_SPARK_INITIALIZE},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutSpark},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY, null},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_SPARK_DESTROY},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutSpark},
-        {AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED},
+        { AppWithCustomTx.SPARK_TX, AppWithCustomTx.INITIALIZE, txDefaulTimeoutSpark },
+        { AppWithCustomTx.SPARK_TX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.SPARK_TX, AppWithCustomTx.DESTROY, txDefaulTimeoutSpark },
+        { AppWithCustomTx.SPARK_TX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE, null },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_TX, AppWithCustomTx.TIMEOUT_SPARK_INITIALIZE },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_TX_D, txDefaulTimeoutSpark },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.INITIALIZE_NEST, AppWithCustomTx.FAILED },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY, null },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_TX, AppWithCustomTx.TIMEOUT_SPARK_DESTROY },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_TX_D, txDefaulTimeoutSpark },
+        { AppWithCustomTx.SPARK_NOTX, AppWithCustomTx.DESTROY_NEST, AppWithCustomTx.FAILED },
       };
 
       for (Object[] writeToValidate : writesToValidate) {
