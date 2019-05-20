@@ -1060,6 +1060,29 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
     }
   }
+  
+  @Category(SlowTests.class)
+  @Test
+  public void testGetServiceURLSameNamespace() throws Exception {
+    ApplicationManager discoveringApplicationManager = deployApplication(AppUsingGetServiceURL.class);
+    ServiceManager discoveringServiceManager = discoveringApplicationManager.getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
+    discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
+
+    ApplicationManager systemApplicationManager = deployApplication(AppWithServices.class);
+    ServiceManager systemCentralServiceManager =
+      systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
+    systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
+
+    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "appWithServices");
+    String decodedResult = new Gson().fromJson(result, String.class);
+    Assert.assertEquals(AppWithServices.ANSWER, decodedResult);
+
+    discoveringServiceManager.stop();
+    systemCentralServiceManager.stop();
+
+    discoveringServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+    systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+  }
 
   /**
    * Checks to ensure that a particular  {@param workerManager} has {@param expected} number of
