@@ -108,6 +108,31 @@ public class AppUsingGetServiceURL extends AbstractApplication {
     }
 
     @GET
+    @Path("appWithServices")
+    public void appWithServices(HttpServiceRequest request, HttpServiceResponder responder) throws IOException {
+      URL serviceURL = getContext().getServiceURL(AppWithServices.APP_NAME, AppWithServices.SERVICE_NAME);
+
+      if (serviceURL == null) {
+        responder.sendError(404, "serviceURL is null");
+        return;
+      }
+
+      URL url = new URL(serviceURL, "response");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+      try {
+        if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
+          String response = new String(ByteStreams.toByteArray(conn.getInputStream()), Charsets.UTF_8);
+          responder.sendJson(response);
+        } else {
+          responder.sendError(500, "Failed to retrieve a response from the service");
+        }
+      } finally {
+        conn.disconnect();
+      }
+    }
+
+    @GET
     @Path("read/{key}")
     public void readDataSet(HttpServiceRequest request, HttpServiceResponder responder,
                             @PathParam("key") String key) throws IOException {
