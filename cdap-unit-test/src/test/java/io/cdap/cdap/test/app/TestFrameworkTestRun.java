@@ -1037,9 +1037,11 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
   }
 
   @Category(SlowTests.class)
-  @Test
+  @Test(expected=IOException.class)
   public void testGetServiceURLDiffNamespace() throws Exception {
     ApplicationManager discoveringApplicationManager = deployApplication(AppUsingGetServiceURL.class);
+    ServiceManager discoveringServiceManager = discoveringApplicationManager.getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
+    discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
     NamespaceId systemSpace = new NamespaceId("system");
     ApplicationManager systemApplicationManager = deployApplication(systemSpace, AppWithServices.class);
@@ -1047,11 +1049,16 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    // serviceManager.stop();
-    systemCentralServiceManager.stop();
+    try {
+      callServiceGet(discoveringServiceManager.getServiceURL(), "appWithServices");
+    }
+    finally {
+      discoveringServiceManager.stop();
+      systemCentralServiceManager.stop();
 
-    // serviceManager.waitForStopped(10, TimeUnit.SECONDS);
-    systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+      discoveringServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+      systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+    }
   }
 
   /**
