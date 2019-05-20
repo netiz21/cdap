@@ -110,7 +110,7 @@ public class AppUsingGetServiceURL extends AbstractApplication {
     @GET
     @Path("appWithServices")
     public void appWithServices(HttpServiceRequest request, HttpServiceResponder responder) throws IOException {
-      URL serviceURL = getContext().getServiceURL(AppWithServices.APP_NAME, AppWithServices.SERVICE_NAME);
+      URL serviceURL = getContext().getServiceURL("system", AppWithServices.APP_NAME, AppWithServices.SERVICE_NAME);
 
       if (serviceURL == null) {
         responder.sendError(404, "serviceURL is null");
