@@ -108,9 +108,10 @@ public class AppUsingGetServiceURL extends AbstractApplication {
     }
 
     @GET
-    @Path("forward")
-    public void forward(HttpServiceRequest request, HttpServiceResponder responder) throws IOException {
-      URL serviceURL = getContext().getServiceURL("system", AppWithServices.APP_NAME, AppWithServices.SERVICE_NAME);
+    @Path("forward/{namespace}")
+    public void forward(HttpServiceRequest request, HttpServiceResponder responder,
+                        @PathParam("namespace") String namespace) throws IOException {
+      URL serviceURL = getContext().getServiceURL(namespace, AppWithServices.APP_NAME, AppWithServices.SERVICE_NAME);
 
       if (serviceURL == null) {
         responder.sendError(404, "serviceURL is null");

@@ -1049,7 +1049,8 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "forward");
+    String result = callServiceGet(discoveringServiceManager.getServiceURL(),
+                                   "forward/" + NamespaceId.SYSTEM.getNamespace());
     String decodedResult = new Gson().fromJson(result, String.class);
     Assert.assertEquals(AppWithServices.ANSWER, decodedResult);
 
@@ -1063,16 +1064,17 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
   @Category(SlowTests.class)
   @Test
   public void testGetServiceURLSameNamespace() throws Exception {
-    ApplicationManager discoveringApplicationManager = deployApplication(AppUsingGetServiceURL.class);
+    ApplicationManager discoveringApplicationManager = deployApplication(testSpace, AppUsingGetServiceURL.class);
     ServiceManager discoveringServiceManager = discoveringApplicationManager.getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
     discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    ApplicationManager systemApplicationManager = deployApplication(AppWithServices.class);
+    ApplicationManager systemApplicationManager = deployApplication(testSpace, AppWithServices.class);
     ServiceManager systemCentralServiceManager =
       systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    String result = callServiceGet(discoveringServiceManager.getServiceURL(), "forward");
+    String result = callServiceGet(discoveringServiceManager.getServiceURL(),
+                                   "forward/" + testSpace.getNamespace());
     String decodedResult = new Gson().fromJson(result, String.class);
     Assert.assertEquals(AppWithServices.ANSWER, decodedResult);
 
