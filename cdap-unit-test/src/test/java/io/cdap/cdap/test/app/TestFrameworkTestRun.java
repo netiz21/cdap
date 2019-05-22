@@ -1040,13 +1040,14 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
   @Test
   public void testGetServiceURLDiffNamespace() throws Exception {
     ApplicationManager discoveringApplicationManager = deployApplication(AppUsingGetServiceURL.class);
+    ApplicationManager systemApplicationManager = deployApplication(NamespaceId.SYSTEM, AppUsingGetServiceURL.class);
+
+    // Discover system service from the default namespace
     ServiceManager discoveringServiceManager = discoveringApplicationManager
       .getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
     discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
-
-    ApplicationManager systemApplicationManager = deployApplication(NamespaceId.SYSTEM, AppUsingGetServiceURL.class);
-    ServiceManager systemCentralServiceManager =
-      systemApplicationManager.getServiceManager(AppUsingGetServiceURL.CENTRAL_SERVICE).start();
+    ServiceManager systemCentralServiceManager = systemApplicationManager
+      .getServiceManager(AppUsingGetServiceURL.CENTRAL_SERVICE).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
     String result = callServiceGet(discoveringServiceManager.getServiceURL(),
@@ -1059,6 +1060,31 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
 
     discoveringServiceManager.waitForStopped(10, TimeUnit.SECONDS);
     systemCentralServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+
+    // Attempt to discover system service from the default namespace before the system service was started
+    discoveringServiceManager = discoveringApplicationManager.getServiceManager(AppUsingGetServiceURL.FORWARDING)
+      .start();
+    discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
+
+    int responseCode = callServiceGetResponseCode(discoveringServiceManager.getServiceURL(),
+                                                  "forward/" + NamespaceId.SYSTEM.getNamespace());
+    Assert.assertEquals(404, responseCode);
+
+    discoveringServiceManager.stop();
+    discoveringServiceManager.waitForStopped(10, TimeUnit.SECONDS);
+
+    // Attempt to discover service in non-existent namespace from the default namespace
+    discoveringServiceManager = discoveringApplicationManager.getServiceManager(AppUsingGetServiceURL.FORWARDING)
+      .start();
+    discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
+
+    NamespaceId nonExistentNamespace = new NamespaceId("nonexistent");
+    responseCode = callServiceGetResponseCode(discoveringServiceManager.getServiceURL(),
+                                              "forward/" + nonExistentNamespace);
+    Assert.assertEquals(404, responseCode);
+
+    discoveringServiceManager.stop();
+    discoveringServiceManager.waitForStopped(10, TimeUnit.SECONDS);
   }
 
   /**
@@ -2038,6 +2064,12 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
     scopeMetadata = GSON.fromJson(result, MAP_METADATASCOPE_METADATA_TYPE);
     Assert.assertTrue(scopeMetadata.get(MetadataScope.USER).getTags().isEmpty());
     Assert.assertTrue(scopeMetadata.get(MetadataScope.USER).getProperties().isEmpty());
+  }
+
+  private int callServiceGetResponseCode(URL serviceURL, String path) throws IOException {
+    HttpURLConnection connection = (HttpURLConnection) new URL(serviceURL.toString() + path).openConnection();
+
+    return connection.getResponseCode();
   }
 
   private String callServiceGet(URL serviceURL, String path) throws IOException {
