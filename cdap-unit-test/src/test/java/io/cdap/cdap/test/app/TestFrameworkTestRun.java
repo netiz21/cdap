@@ -1044,15 +1044,15 @@ public class TestFrameworkTestRun extends TestFrameworkTestBase {
       .getServiceManager(AppUsingGetServiceURL.FORWARDING).start();
     discoveringServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
-    ApplicationManager systemApplicationManager = deployApplication(NamespaceId.SYSTEM, AppWithServices.class);
+    ApplicationManager systemApplicationManager = deployApplication(NamespaceId.SYSTEM, AppUsingGetServiceURL.class);
     ServiceManager systemCentralServiceManager =
-      systemApplicationManager.getServiceManager(AppWithServices.SERVICE_NAME).start();
+      systemApplicationManager.getServiceManager(AppUsingGetServiceURL.CENTRAL_SERVICE).start();
     systemCentralServiceManager.waitForRun(ProgramRunStatus.RUNNING, 10, TimeUnit.SECONDS);
 
     String result = callServiceGet(discoveringServiceManager.getServiceURL(),
                                    "forward/" + NamespaceId.SYSTEM.getNamespace());
     result = new Gson().fromJson(result, String.class);
-    Assert.assertEquals(AppWithServices.ANSWER, result);
+    Assert.assertEquals(AppUsingGetServiceURL.ANSWER, result);
 
     discoveringServiceManager.stop();
     systemCentralServiceManager.stop();
